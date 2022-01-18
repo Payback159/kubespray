@@ -45,6 +45,22 @@ download_validate_certs: true
 # Use the first kube_control_plane if download_localhost is not set
 download_delegate: "{% if download_localhost %}localhost{% else %}{{ groups['kube_control_plane'][0] }}{% endif %}"
 
+# The docker_image_info_command might seems weird but we are using raw/endraw and `{{ `{{` }}` to manage the double jinja2 processing
+docker_image_pull_command: "{{ docker_bin_dir }}/docker pull"
+docker_image_info_command: "{{ docker_bin_dir }}/docker images -q | xargs -i {{ '{{' }} docker_bin_dir }}/docker inspect -f {% raw %}'{{ '{{' }} if .RepoTags }}{{ '{{' }} join .RepoTags \",\" }}{{ '{{' }} end }}{{ '{{' }} if .RepoDigests }},{{ '{{' }} join .RepoDigests \",\" }}{{ '{{' }} end }}' {% endraw %} {} | tr '\n' ','"
+nerdctl_image_info_command: "{{ bin_dir }}/nerdctl -n k8s.io images --format '{% raw %}{{ '{{' }} .Repository {{ '}}' }}:{{ '{{' }} .Tag {{ '}}' }}{% endraw %}' 2>/dev/null | grep -v ^:$ | tr '\n' ','"
+nerdctl_image_pull_command: "{{ bin_dir }}/nerdctl -n k8s.io pull --quiet{{ nerdctl_extra_flags }}"
+crictl_image_info_command: "{{ bin_dir }}/crictl images --verbose | awk -F ': ' '/RepoTags|RepoDigests/ {print $2}' | tr '\n' ','"
+crictl_image_pull_command: "{{ bin_dir }}/crictl pull"
+
+image_command_tool: "{%- if container_manager == 'containerd' -%}nerdctl{%- elif container_manager == 'crio' -%}crictl{%- else -%}{{ container_manager }}{%- endif -%}"
+image_command_tool_on_localhost: "{{ image_command_tool }}"
+
+image_pull_command: "{{ lookup('vars', image_command_tool + '_image_pull_command') }}"
+image_info_command: "{{ lookup('vars', image_command_tool + '_image_info_command') }}"
+image_pull_command_on_localhost: "{{ lookup('vars', image_command_tool_on_localhost + '_image_pull_command') }}"
+image_info_command_on_localhost: "{{ lookup('vars', image_command_tool_on_localhost + '_image_info_command') }}"
+
 # Arch of Docker images and needed packages
 image_arch: "{{host_architecture | default('amd64')}}"
 
@@ -53,11 +69,14 @@ nerdctl_extra_flags: '{%- if containerd_insecure_registries is defined and conta
 
 # Versions
 kubeadm_version: "{{ kube_version }}"
-etcd_version: v3.5.0
 crun_version: 1.4
 runc_version: v1.0.3
 kata_containers_version: 2.2.3
 gvisor_version: 20210921
+containerd_version: 1.5.9
+
+# this is relevant when container_manager == 'docker'
+docker_containerd_version: 1.4.12
 
 # gcr and kubernetes image repo define
 gcr_image_repo: "gcr.io"
@@ -74,7 +93,7 @@ github_image_repo: "ghcr.io"
 
 # TODO(mattymo): Move calico versions to roles/network_plugins/calico/defaults
 # after migration to container download
-calico_version: "v3.20.3"
+calico_version: "v3.21.2"
 calico_ctl_version: "{{ calico_version }}"
 calico_cni_version: "{{ calico_version }}"
 calico_flexvol_version: "{{ calico_version }}"
@@ -97,6 +116,13 @@ krew_version: "v0.4.2"
 
 # Get kubernetes major version (i.e. 1.17.4 => 1.17)
 kube_major_version: "{{ kube_version | regex_replace('^v([0-9])+\\.([0-9]+)\\.[0-9]+', 'v\\1.\\2') }}"
+
+etcd_supported_versions:
+  v1.23: "v3.5.1"
+  v1.22: "v3.5.0"
+  v1.21: "v3.5.0"
+etcd_version: "{{ etcd_supported_versions[kube_major_version] }}"
+
 crictl_supported_versions:
   v1.23: "v1.22.0"
   v1.22: "v1.22.0"
@@ -107,7 +133,7 @@ crictl_version: "{{ crictl_supported_versions[kube_major_version] }}"
 kubelet_download_url: "https://storage.googleapis.com/kubernetes-release/release/{{ kube_version }}/bin/linux/{{ image_arch }}/kubelet"
 kubectl_download_url: "https://storage.googleapis.com/kubernetes-release/release/{{ kube_version }}/bin/linux/{{ image_arch }}/kubectl"
 kubeadm_download_url: "https://storage.googleapis.com/kubernetes-release/release/{{ kubeadm_version }}/bin/linux/{{ image_arch }}/kubeadm"
-etcd_download_url: "https://github.com/coreos/etcd/releases/download/{{ etcd_version }}/etcd-{{ etcd_version }}-linux-{{ image_arch }}.tar.gz"
+etcd_download_url: "https://github.com/etcd-io/etcd/releases/download/{{ etcd_version }}/etcd-{{ etcd_version }}-linux-{{ image_arch }}.tar.gz"
 flannel_cni_download_url: "https://github.com/flannel-io/cni-plugin/releases/download/{{ flannel_cni_version }}/flannel-{{ image_arch }}"
 cni_download_url: "https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-linux-{{ image_arch }}-{{ cni_version }}.tgz"
 calicoctl_download_url: "https://github.com/projectcalico/calicoctl/releases/download/{{ calico_ctl_version }}/calicoctl-linux-{{ image_arch }}"
@@ -306,9 +332,15 @@ kubeadm_checksums:
 etcd_binary_checksums:
   # Etcd does not have arm32 builds at the moment, having some dummy value is
   # required to avoid "no attribute" error
-  arm: 0
-  arm64: 444e10e6880595d75aaf55762901c722049b29d56fef50b2f23464bb7f9db74d
-  amd64: 864baa0437f8368e0713d44b83afe21dce1fb4ee7dae4ca0f9dd5f0df22d01c4
+  arm:
+    v3.5.0: 0
+    v3.5.1: 0
+  arm64:
+    v3.5.0: 444e10e6880595d75aaf55762901c722049b29d56fef50b2f23464bb7f9db74d
+    v3.5.1: 86203022e23d7368bac23d96095270dc6300f356ea882e435926a9effd7e5f0e
+  amd64:
+    v3.5.0: 864baa0437f8368e0713d44b83afe21dce1fb4ee7dae4ca0f9dd5f0df22d01c4
+    v3.5.1: 728a14914217ce60de2e1299fc1a2c2c5564e7ffd0d9dadf3f5073103ab619b4
 
 flannel_cni_binary_checksums:
   arm:
@@ -331,22 +363,18 @@ calicoctl_binary_checksums:
     v3.21.2: 0
     v3.20.3: 0
     v3.19.3: 0
-    v3.18.6: 0
   amd64:
     v3.21.2: d495edfc254e00f008ef6872422a31ef5f442a1ff96bcb724dd2df86ef75b7e3
     v3.20.3: 29bec97b1dfc135b830b0cbfd3dfe216f00e97e9e6ef08e620d81d4a09db6393
     v3.19.3: e9d91036764ec24f32025c3176efb2c2673b9936270e6165fb6583cce97bc43f
-    v3.18.6: 0306c2e82d7c77d53d3e1bc3d826c01bb670292562c1f2287b80738064710665
   arm64:
     v3.21.2: 94c1bec6b7661243f053314d901df54d2e3e5bf4eb746af09b29b07e4654f4b9
     v3.20.3: 63683f21515a20ceee8f234a9aba0e5efb342860940026d0ba6f281cc76aa1e3
     v3.19.3: ec3cfbd2dccbd614ac353be8c9abf8e336d8700fbd2b9b76da1c3c4c14a6dfe2
-    v3.18.6: 2990c2004d9b9ab6cfc913fe0ed521c12d7b5a3f3fcf4940549a8a15721e84dd
 calico_crds_archive_checksums:
   v3.21.2: 6f1342ac8b3d9ebfa9714f06aa92f4f0eea0d2b09d7e77ed73c0c9de0bb0aee8
   v3.20.3: 2a3a5cbe05c60fa2fc850252c4eecfa36dd6629191ed805eea31f9b5c740bc4c
   v3.19.3: 7066d0e6b0136920f82a75a5bd2d595e9f69bd3ab823403e920906569ec6be07
-  v3.18.6: f8eea12992c41bb4954364e9e4d332b4daf40305688973541110b6268dc0037a
 
 krew_archive_checksums:
   linux:
@@ -386,7 +414,7 @@ runc_checksums:
     v1.0.3: 0
   arm64:
     v1.0.2: 0
-    v1.0.3: edda26f24f9137f5e6981583dc0e782ea9e3ffee591d4c7a9f9565adc2ed9461
+    v1.0.3: 0
   amd64:
     v1.0.2: 44d1ba01a286aaf0b31b4be9c6abc20deab0653d44ecb0d93b4d0d20eac3e0b6
     v1.0.3: 5d4c0e5a4e8d6ccbb9c6696bb239f31cfab8d94b15801bafe09aaee600714f61
@@ -454,6 +482,7 @@ containerd_archive_checksums:
     1.5.5: 0
     1.5.7: 0
     1.5.8: 0
+    1.5.9: 0
   arm64:
     1.4.9: 0
     1.4.11: 0
@@ -461,6 +490,7 @@ containerd_archive_checksums:
     1.5.5: 0
     1.5.7: 0
     1.5.8: 0
+    1.5.9: 0
   amd64:
     1.4.9: 346f88ad5b973960ff81b5539d4177af5941ec2e4703b479ca9a6081ff1d023b
     1.4.11: 80c47ec5ce2cd91a15204b5f5b534892ca653e75f3fba0c451ca326bca45fb00
@@ -468,8 +498,9 @@ containerd_archive_checksums:
     1.5.5: 8efc527ffb772a82021800f0151374a3113ed2439922497ff08f2596a70f10f1
     1.5.7: 109fc95b86382065ea668005c376360ddcd8c4ec413e7abe220ae9f461e0e173
     1.5.8: feeda3f563edf0294e33b6c4b89bd7dbe0ee182ca61a2f9b8c3de2766bcbc99b
+    1.5.9: a457793a1643657588baf46d3ffbf44fae0139b65076064e237ddf29cd838ba4
 
-etcd_binary_checksum: "{{ etcd_binary_checksums[image_arch] }}"
+etcd_binary_checksum: "{{ etcd_binary_checksums[image_arch][etcd_version] }}"
 flannel_cni_binary_checksum: "{{ flannel_cni_binary_checksums[image_arch][flannel_cni_version] }}"
 cni_binary_checksum: "{{ cni_binary_checksums[image_arch][cni_version] }}"
 kubelet_binary_checksum: "{{ kubelet_checksums[image_arch][kube_version] }}"
@@ -603,7 +634,7 @@ csi_attacher_image_tag: "v3.3.0"
 csi_provisioner_image_repo: "{{ kube_image_repo }}/sig-storage/csi-provisioner"
 csi_provisioner_image_tag: "v3.0.0"
 csi_snapshotter_image_repo: "{{ kube_image_repo }}/sig-storage/csi-snapshotter"
-csi_snapshotter_image_tag: "v4.2.1"
+csi_snapshotter_image_tag: "v5.0.0"
 csi_resizer_image_repo: "{{ kube_image_repo }}/sig-storage/csi-resizer"
 csi_resizer_image_tag: "v1.3.0"
 csi_node_driver_registrar_image_repo: "{{ kube_image_repo }}/sig-storage/csi-node-driver-registrar"
