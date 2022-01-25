@@ -131,7 +131,7 @@ Note: Upstart/SysV init based OS types are not supported.
 ## Supported Components
 
 - Core
-  - [kubernetes](https://github.com/kubernetes/kubernetes) v1.23.1
+  - [kubernetes](https://github.com/kubernetes/kubernetes) v1.23.2
   - [etcd](https://github.com/etcd-io/etcd) v3.5.1
   - [docker](https://www.docker.com/) v20.10 (see note)
   - [containerd](https://containerd.io/) v1.5.9
@@ -140,7 +140,7 @@ Note: Upstart/SysV init based OS types are not supported.
   - [cni-plugins](https://github.com/containernetworking/plugins) v1.0.1
   - [calico](https://github.com/projectcalico/calico) v3.20.3
   - [canal](https://github.com/projectcalico/canal) (given calico/flannel versions)
-  - [cilium](https://github.com/cilium/cilium) v1.9.11
+  - [cilium](https://github.com/cilium/cilium) v1.11.1
   - [flanneld](https://github.com/flannel-io/flannel) v0.15.1
   - [kube-ovn](https://github.com/alauda/kube-ovn) v1.8.1
   - [kube-router](https://github.com/cloudnativelabs/kube-router) v1.4.0
