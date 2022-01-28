@@ -37,9 +37,10 @@ jobs:
         mkdir vagrant
         cat << EOF > vagrant/config.rb
         \$instance_name_prefix = "kub"
-        \$vm_cpus = 1
+        \$vm_cpus = 4
+        \$vm_memory = 4096
         \$num_instances = 3
-        \$os = "centos-bento"
+        \$os = "ubuntu2004"
         \$subnet = "192.168.56" # for github-actions
         \$network_plugin = "flannel"
         EOF
