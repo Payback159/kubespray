@@ -31,11 +31,19 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-vagrant-
 
-    - name: Show Vagrant version
-      run: vagrant --version
+    - name: customize vagrant
+      run: |-
+        # customize the vagrant environment
+        mkdir vagrant
+        cat << EOF > vagrant/config.rb
+        \$instance_name_prefix = "kub"
+        \$vm_cpus = 1
+        \$num_instances = 3
+        \$os = "centos-bento"
+        \$subnet = "192.168.56" # for github-actions
+        \$network_plugin = "flannel"
+        EOF
 
     - name: Run vagrant up
       run: vagrant up
 
-    - name: ssh into box after boot
-      run: vagrant ssh -c "echo 'hello world!'"
