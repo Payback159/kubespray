@@ -17,7 +17,7 @@ jobs:
     env:
       repo: containerd
       owner: containerd
-      repository: ${{ env.owner }}/${{ env.repo }}
+      repository: $owner/$repo
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
