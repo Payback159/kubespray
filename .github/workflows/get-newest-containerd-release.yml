@@ -26,7 +26,7 @@ jobs:
 
       - name: Get Latest Release
         id: get-latest-release
-        uses: pozetroninc/github-action-get-latest-release@latest
+        uses: pozetroninc/github-action-get-latest-release@v0.6.0
         with:
           owner: $owner
           repo: $repo
