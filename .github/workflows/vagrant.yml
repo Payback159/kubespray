@@ -1,6 +1,9 @@
 name: vagrant-up
 
-on: [push]
+on:
+  push:
+    paths:
+      - "roles/"
 
 jobs:
   vagrant-up:
