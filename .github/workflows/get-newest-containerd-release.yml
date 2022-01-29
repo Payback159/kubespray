@@ -17,7 +17,6 @@ jobs:
     env:
       repo: containerd
       owner: containerd
-      repository: $owner/$repo
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -35,7 +34,7 @@ jobs:
       - name: Download GitHub Release Assets
         uses: duhow/download-github-release-assets@v1.1.0
         with:
-          repository: ${{ env.repository }}
+          repository: ${{ env.owner }}/${{ env.repo }}
           release-id: ${{ steps.get-latest-release.outputs.release }}
           files: |-
             containerd-${{ steps.get-latest-release.outputs.release }}-linux-*.tar.gz
