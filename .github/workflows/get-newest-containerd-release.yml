@@ -23,6 +23,9 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      - name: yq - portable yaml processor
+        uses: mikefarah/yq@v4.18.1
+
       - name: Get Latest Release
         id: get-latest-release
         uses: pozetroninc/github-action-get-latest-release@v0.6.0
@@ -47,9 +50,9 @@ jobs:
         run: echo "::set-output name=release_hash::$(cat tmp/containerd-${{ steps.version.outputs.stripped_release }}-linux-amd64.tar.gz.sha256sum | awk '{print $1}')"
         id: retrieve-release-hash
       
-      - name: add new containerd version
-        uses: mikefarah/yq@v4.18.1
-        run: yq -i '.containerd_archive_checksums.amd64."${{ steps.version.outputs.stripped_release }}" = "${{ steps.retrieve-release-hash.outputs.release_hash }}"' roles/download/defaults/main.yml
+      - name: add containerd version to download role
+        run: |
+          yq -i '.containerd_archive_checksums.amd64."${{ steps.version.outputs.stripped_release }}" = "${{ steps.retrieve-release-hash.outputs.release_hash }}"' roles/download/defaults/main.yml
 
-      # - name: check file contents
-      #   run: cat roles/download/defaults/main.yml
+      - name: check file contents
+        run: cat roles/download/defaults/main.yml
