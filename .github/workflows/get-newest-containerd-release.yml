@@ -4,7 +4,6 @@ name: add newest containerd Hash
 
 # Controls when the workflow will run
 on:
-  push:
   schedule:
     # * is a special character in YAML so you have to quote this string
     - cron:  '0 23 * * *'
@@ -32,7 +31,7 @@ jobs:
         with:
           owner: ${{ env.owner }}
           repo: ${{ env.repo }}
-          excludes: draft
+          excludes: prerelease, draft
           
       - name: Retrieve version
         run: echo "::set-output name=stripped_release::$(echo -n ${{ steps.get-latest-release.outputs.release }} | sed 's/v//')"
