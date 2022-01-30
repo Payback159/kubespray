@@ -46,13 +46,11 @@ jobs:
       - name: get Hash value from fetched release
         run: echo "::set-output name=release_hash::$(cat tmp/containerd-${{ steps.version.outputs.stripped_release }}-linux-amd64.tar.gz.sha256sum | awk '{print $1}')"
         id: retrieve-release-hash
-          
-      - name: YAML Update Action
-        uses: fjogeleit/yaml-update-action@v0.7.0
-        with:
-          valueFile: 'roles/download/default/main.yml'
-          propertyPath: 'containerd_archive_checksums.amd64."${{ steps.version.outputs.stripped_release }}"'
-          value: ${{ steps.retrieve-release-hash.outputs.release_hash }}
-          commitChange: false
-          updateFile: true
-          createPR: false
+      
+      - name: add new containerd version
+        uses: mikefarah/yq@v4.18.1
+        run: |
+          yq -i '.containerd_archive_checksums.amd64."${{ steps.version.outputs.stripped_release }}" = "${{ steps.retrieve-release-hash.outputs.release_hash }}"' roles/download/defaults/main.yml
+
+      - name: check file contents
+        run: cat roles/download/defaults/main.yml
