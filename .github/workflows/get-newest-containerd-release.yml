@@ -30,12 +30,16 @@ jobs:
           owner: ${{ env.owner }}
           repo: ${{ env.repo }}
           excludes: prerelease, draft
+        run: echo "::set-output name=stripped-release::$(cat ${{ steps.get-latest-release.outputs.release }} | sed 's/v//')"
+ 
+
+
       
       - name: Fetch Github Release Asset
         uses: dsaltares/fetch-gh-release-asset@0.0.7
         with:
           repo: ${{ env.owner }}/${{ env.repo }}
-          file: containerd-${{ steps.get-latest-release.outputs.release }}-linux-amd64.tar.gz.sha256sum
+          file: containerd-${{ steps.get-latest-release.outputs.stripped-release }}-linux-amd64.tar.gz.sha256sum
           version: ${{ steps.get-latest-release.outputs.id }}
           target: tmp/
 
