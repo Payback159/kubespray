@@ -52,5 +52,8 @@ jobs:
         with:
           cmd: yq -i '.containerd_archive_checksums.amd64."${{ steps.version.outputs.stripped_release }}" = "${{ steps.retrieve-release-hash.outputs.release_hash }}"' roles/download/defaults/main.yml
 
-      - name: check file contents
-        run: cat roles/download/defaults/main.yml
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          add-paths: |
+            roles/download/defaults/main.yml
