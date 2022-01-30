@@ -49,7 +49,7 @@ jobs:
       
       - name: add new containerd version
         uses: mikefarah/yq@v4.18.1
-        run: |
+        run: |-
           yq -i '.containerd_archive_checksums.amd64."${{ steps.version.outputs.stripped_release }}" = "${{ steps.retrieve-release-hash.outputs.release_hash }}"' roles/download/defaults/main.yml
 
       - name: check file contents
