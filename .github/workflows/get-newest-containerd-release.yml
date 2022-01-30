@@ -35,7 +35,7 @@ jobs:
         uses: duhow/download-github-release-assets@v1.1.0
         with:
           repository: ${{ env.owner }}/${{ env.repo }}
-          release-id: containerd ${{ steps.get-latest-release.outputs.release }}
+          release-id: ${{ steps.get-latest-release.outputs.id }}
           files: |-
             containerd-${{ steps.get-latest-release.outputs.release }}-linux-*.tar.gz
             containerd-${{ steps.get-latest-release.outputs.release }}-linux-*.tar.gz.sha256sum
