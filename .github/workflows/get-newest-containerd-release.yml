@@ -32,7 +32,7 @@ jobs:
           excludes: prerelease, draft
           
       - name: Retrieve version
-        run: echo "::set-output name=stripped_release::$(cat ${{ steps.get-latest-release.outputs.release }} | sed 's/v//')"
+        run: echo "::set-output name=stripped_release::$(echo -n ${{ steps.get-latest-release.outputs.release }} | sed 's/v//')"
         id: version
 
       - name: Fetch Github Release Asset
