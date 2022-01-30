@@ -44,7 +44,7 @@ jobs:
           repo: ${{ env.owner }}/${{ env.repo }}
           file: containerd-${{ steps.version.outputs.stripped_release }}-linux-amd64.tar.gz.sha256sum
           version: ${{ steps.get-latest-release.outputs.id }}
-          target: ${{ env.GITHUB_WORKSPACE }}/tmp/assets/
+          target: tmp/assets/
       
       - name: get Hash value from fetched release
         run: echo "::set-output name=release_hash::$(cat ${{ env.GITHUB_WORKSPACE }}/tmp/assets/containerd-${{ steps.version.outputs.stripped_release }}-linux-amd64.tar.gz.sha256sum | awk '{print $1}')"
