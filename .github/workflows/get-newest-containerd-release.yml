@@ -42,9 +42,17 @@ jobs:
           file: containerd-${{ steps.version.outputs.stripped_release }}-linux-amd64.tar.gz.sha256sum
           version: ${{ steps.get-latest-release.outputs.id }}
           target: tmp/
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo "Append containerd_archive_checksums: in roles/download/defaults/main.yml"
-          echo "for each architecture arm, arm64 and amd64 key=versionr and value = sha-hash"
+      
+      - name: get Hash value from fetched release
+        run: echo "::set-output name=release_hash::$(cat tmp/containerd-${{ steps.version.outputs.stripped_release }}-linux-amd64.tar.gz.sha256sum | awk '{print $1}')"
+        id: retrieve-release-hash
+          
+      - name: YAML Update Action
+        uses: fjogeleit/yaml-update-action@v0.7.0
+        with:
+          valueFile: 'roles/download/default/main.yml'
+          propertyPath: 'containerd_archive_checksums.amd64.${{ steps.version.outputs.stripped_release }}'
+          value: ${{ steps.retrieve-release-hash.outputs.release_hash }}
+          commitChange: false
+          updateFile: true
+          createPR: false
