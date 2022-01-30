@@ -44,10 +44,10 @@ jobs:
           repo: ${{ env.owner }}/${{ env.repo }}
           file: containerd-${{ steps.version.outputs.stripped_release }}-linux-amd64.tar.gz.sha256sum
           version: ${{ steps.get-latest-release.outputs.id }}
-          target: tmp/assets/
+          target: tmp/assets/containerd-${{ steps.version.outputs.stripped_release }}-linux-amd64.tar.gz.sha256sum
 
       - name: get Hash value from fetched release
-        run: echo "::set-output name=release_hash::$(sudo chown $(id -u) tmp/assets/containerd-${{ steps.version.outputs.stripped_release }}-linux-amd64.tar.gz.sha256sum && cat tmp/assets/containerd-${{ steps.version.outputs.stripped_release }}-linux-amd64.tar.gz.sha256sum | awk '{print $1}')"
+        run: echo "::set-output name=release_hash::$(cat tmp/assets/containerd-${{ steps.version.outputs.stripped_release }}-linux-amd64.tar.gz.sha256sum | awk '{print $1}')"
         id: retrieve-release-hash
       
       - name: add containerd version to download role
