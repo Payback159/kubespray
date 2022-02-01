@@ -60,3 +60,4 @@ jobs:
         with:
           add-paths: |
             roles/download/defaults/main.yml
+          commit-message: 'Add containerd ${{ steps.get-latest-release.outputs.release }} to download role'
