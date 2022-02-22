@@ -131,14 +131,14 @@ Note: Upstart/SysV init based OS types are not supported.
 ## Supported Components
 
 - Core
-  - [kubernetes](https://github.com/kubernetes/kubernetes) v1.23.3
+  - [kubernetes](https://github.com/kubernetes/kubernetes) v1.23.4
   - [etcd](https://github.com/etcd-io/etcd) v3.5.1
   - [docker](https://www.docker.com/) v20.10 (see note)
   - [containerd](https://containerd.io/) v1.5.9
   - [cri-o](http://cri-o.io/) v1.22 (experimental: see [CRI-O Note](docs/cri-o.md). Only on fedora, ubuntu and centos based OS)
 - Network Plugin
   - [cni-plugins](https://github.com/containernetworking/plugins) v1.0.1
-  - [calico](https://github.com/projectcalico/calico) v3.20.3
+  - [calico](https://github.com/projectcalico/calico) v3.21.4
   - [canal](https://github.com/projectcalico/canal) (given calico/flannel versions)
   - [cilium](https://github.com/cilium/cilium) v1.11.1
   - [flanneld](https://github.com/flannel-io/flannel) v0.15.1

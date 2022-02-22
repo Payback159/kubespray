@@ -58,10 +58,17 @@ Client Version: version.Info{Major:"1", Minor:"19", GitVersion:"v1.19.7", GitCom
 Server Version: version.Info{Major:"1", Minor:"19", GitVersion:"v1.19.7", GitCommit:"1dd5338295409edcfff11505e7bb246f0d325d15", GitTreeState:"clean", BuildDate:"2021-01-13T13:15:20Z", GoVersion:"go1.15.5", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
-If you want to manually control the upgrade procedure, you can use the variables `upgrade_node_confirm` or `upgrade_node_pause_seconds`:
+### Pausing the upgrade
 
-`upgrade_node_confirm: true` - waiting to confirmation to upgrade next node
-`upgrade_node_pause_seconds: 60` - pause 60 seconds before upgrade next node
+If you want to manually control the upgrade procedure, you can set some variables to pause the upgrade playbook. Pausing *before* upgrading each upgrade may be useful for inspecting pods running on that node, or performing manual actions on the node:
+
+* `upgrade_node_confirm: true` - This will pause the playbook execution prior to upgrading each node. The play will resume when manually approved by typing "yes" at the terminal.
+* `upgrade_node_pause_seconds: 60` - This will pause the playbook execution for 60 seconds prior to upgrading each node. The play will resume automatically after 60 seconds.
+
+Pausing *after* upgrading each node may be useful for rebooting the node to apply kernel updates, or testing the still-cordoned node:
+
+* `upgrade_node_post_upgrade_confirm: true` - This will pause the playbook execution after upgrading each node, but before the node is uncordoned. The play will resume when manually approved by typing "yes" at the terminal.
+* `upgrade_node_post_upgrade_pause_seconds: 60` - This will pause the playbook execution for 60 seconds after upgrading each node, but before the node is uncordoned. The play will resume automatically after 60 seconds.
 
 ## Node-based upgrade
 
@@ -300,6 +307,18 @@ caprica   Ready    master,node   7h40m   v1.14.1
 
 
 ```
+
+## Upgrading to v2.19
+
+`etcd_kubeadm_enabled` is being deprecated at v2.19. The same functionality is achievable by setting `etcd_deployment_type` to `kubeadm`.
+Deploying etcd using kubeadm is experimental and is only available for either new or deployments where `etcd_kubeadm_enabled` was set to `true` while deploying the cluster.
+
+From 2.19 and onward `etcd_deployment_type` variable will be placed in `group_vars/all/etcd.yml` instead of `group_vars/etcd.yml`, due to scope issues.
+The placement of the variable is only important for `etcd_deployment_type: kubeadm` right now. However, since this might change in future updates, it is recommended to move the variable.
+
+Upgrading is straightforward; no changes are required if `etcd_kubeadm_enabled` was not set to `true` when deploying.
+
+If you have a cluster where `etcd` was deployed using `kubeadm`, you will need to remove `etcd_kubeadm_enabled` the variable. Then move `etcd_deployment_type` variable from `group_vars/etcd.yml` to `group_vars/all/etcd.yml` due to scope issues and set `etcd_deployment_type` to `kubeadm`.
 
 ## Upgrade order
 
