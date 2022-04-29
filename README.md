@@ -57,10 +57,10 @@ A simple way to ensure you get all the correct version of Ansible is to use the 
 You will then need to use [bind mounts](https://docs.docker.com/storage/bind-mounts/) to get the inventory and ssh key into the container, like this:
 
 ```ShellSession
-docker pull quay.io/kubespray/kubespray:v2.18.0
+docker pull quay.io/kubespray/kubespray:v2.18.1
 docker run --rm -it --mount type=bind,source="$(pwd)"/inventory/sample,dst=/inventory \
   --mount type=bind,source="${HOME}"/.ssh/id_rsa,dst=/root/.ssh/id_rsa \
-  quay.io/kubespray/kubespray:v2.18.0 bash
+  quay.io/kubespray/kubespray:v2.18.1 bash
 # Inside the container you may now run the kubespray playbooks:
 ansible-playbook -i /inventory/inventory.ini --private-key /root/.ssh/id_rsa cluster.yml
 ```
@@ -131,10 +131,10 @@ Note: Upstart/SysV init based OS types are not supported.
 ## Supported Components
 
 - Core
-  - [kubernetes](https://github.com/kubernetes/kubernetes) v1.23.5
-  - [etcd](https://github.com/etcd-io/etcd) v3.5.1
+  - [kubernetes](https://github.com/kubernetes/kubernetes) v1.23.6
+  - [etcd](https://github.com/etcd-io/etcd) v3.5.3
   - [docker](https://www.docker.com/) v20.10 (see note)
-  - [containerd](https://containerd.io/) v1.6.1
+  - [containerd](https://containerd.io/) v1.6.2
   - [cri-o](http://cri-o.io/) v1.22 (experimental: see [CRI-O Note](docs/cri-o.md). Only on fedora, ubuntu and centos based OS)
 - Network Plugin
   - [cni-plugins](https://github.com/containernetworking/plugins) v1.0.1
@@ -161,7 +161,7 @@ Note: Upstart/SysV init based OS types are not supported.
 ## Requirements
 
 - **Minimum required version of Kubernetes is v1.21**
-- **Ansible v2.9.x, Jinja 2.11+ and python-netaddr is installed on the machine that will run Ansible commands, Ansible 2.10.x is experimentally supported for now**
+- **Ansible v2.9.x, Jinja 2.11+ and python-netaddr is installed on the machine that will run Ansible commands**
 - The target servers must have **access to the Internet** in order to pull docker images. Otherwise, additional configuration is required (See [Offline Environment](docs/offline-environment.md))
 - The target servers are configured to allow **IPv4 forwarding**.
 - If using IPv6 for pods and services, the target servers are configured to allow **IPv6 forwarding**.

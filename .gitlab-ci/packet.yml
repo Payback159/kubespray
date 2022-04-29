@@ -31,18 +31,26 @@ packet_ubuntu20-calico-aio:
   variables:
     RESET_CHECK: "true"
 
-# Exericse ansible variants
+# Exericse ansible variants during the nightly jobs
 packet_ubuntu20-calico-aio-ansible-2_9:
   stage: deploy-part1
-  extends: .packet_pr
+  extends: .packet_periodic
   when: on_success
   variables:
     ANSIBLE_MAJOR_VERSION: "2.9"
     RESET_CHECK: "true"
 
+packet_ubuntu20-calico-aio-ansible-2_10:
+  stage: deploy-part1
+  extends: .packet_periodic
+  when: on_success
+  variables:
+    ANSIBLE_MAJOR_VERSION: "2.10"
+    RESET_CHECK: "true"
+
 packet_ubuntu20-calico-aio-ansible-2_11:
   stage: deploy-part1
-  extends: .packet_pr
+  extends: .packet_periodic
   when: on_success
   variables:
     ANSIBLE_MAJOR_VERSION: "2.11"
@@ -249,6 +257,13 @@ packet_fedora34-kube-ovn:
 # Long jobs (45min+)
 
 packet_centos7-docker-weave-upgrade-ha:
+  stage: deploy-part3
+  extends: .packet_periodic
+  when: on_success
+  variables:
+    UPGRADE_TEST: basic
+
+packet_ubuntu20-calico-etcd-kubeadm-upgrade-ha:
   stage: deploy-part3
   extends: .packet_periodic
   when: on_success

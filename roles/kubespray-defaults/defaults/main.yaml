@@ -60,6 +60,8 @@ kube_proxy_nodeport_addresses: >-
 # Set to true to allow pre-checks to fail and continue deployment
 ignore_assert_errors: false
 
+kube_vip_enabled: false
+
 # nginx-proxy configure
 nginx_config_dir: "/etc/nginx"
 
@@ -154,6 +156,12 @@ kube_token_dir: "{{ kube_config_dir }}/tokens"
 # This is the group that the cert creation scripts chgrp the
 # cert files to. Not really changeable...
 kube_cert_group: kube-cert
+
+# Set to true when the CAs are managed externally.
+# When true, disables all tasks manipulating certificates. Ensure before the kubespray run that:
+# - Certificates and CAs are present in kube_cert_dir
+# - Kubeconfig files are present in kube_config_dir
+kube_external_ca_mode: false
 
 # Cluster Loglevel configuration
 kube_log_level: 2
@@ -401,6 +409,7 @@ aws_ebs_csi_enabled: false
 azure_csi_enabled: false
 gcp_pd_csi_enabled: false
 vsphere_csi_enabled: false
+upcloud_csi_enabled: false
 csi_snapshot_controller_enabled: false
 persistent_volumes_enabled: false
 cephfs_provisioner_enabled: false
@@ -489,6 +498,11 @@ kubelet_protect_kernel_defaults: true
 ## List of key=value pairs that describe feature gates for
 ## the k8s cluster.
 kube_feature_gates: []
+kube_apiserver_feature_gates: []
+kube_controller_feature_gates: []
+kube_scheduler_feature_gates: []
+kube_proxy_feature_gates: []
+kubelet_feature_gates: []
 kubeadm_feature_gates: []
 
 # Local volume provisioner storage classes
@@ -613,6 +627,8 @@ etcd_events_data_dir: "/var/lib/etcd-events"
 etcd_cert_dir: "{{ etcd_config_dir }}/ssl"
 
 typha_enabled: false
+
+calico_apiserver_enabled: false
 
 _host_architecture_groups:
   x86_64: amd64
