@@ -27,6 +27,13 @@ images:
     converted: false
     tag: "latest"
 
+  ubuntu-2204:
+    filename: jammy-server-cloudimg-amd64.img
+    url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-disk-kvm.img
+    checksum: sha256:d3f3f446bf35b2e58b82c10c8fa65525264efe5b0e398238f00ab670f49528ab
+    converted: false
+    tag: "latest"
+
   fedora-34:
     filename: Fedora-Cloud-Base-34-1.2.x86_64.qcow2
     url: https://download.fedoraproject.org/pub/fedora/linux/releases/34/Cloud/x86_64/images/Fedora-Cloud-Base-34-1.2.x86_64.qcow2
@@ -66,6 +73,13 @@ images:
     filename: AlmaLinux-8-GenericCloud-latest.x86_64.qcow2
     url: https://repo.almalinux.org/almalinux/8.5/cloud/x86_64/images/AlmaLinux-8-GenericCloud-8.5-20211119.x86_64.qcow2
     checksum: sha256:d629247b12802157be127db53a7fcb484b80fceae9896d750c953a51a8c6688f
+    converted: true
+    tag: "latest"
+
+  rockylinux-8:
+    filename: Rocky-8-GenericCloud-8.6-20220515.x86_64.qcow2
+    url: https://download.rockylinux.org/pub/rocky/8.6/images/Rocky-8-GenericCloud-8.6-20220515.x86_64.qcow2
+    checksum: sha256:77e79f487c70f6bfa5655d8084e02cb8d31900a2c2a22b2334c3401b40a1231c
     converted: true
     tag: "latest"
 

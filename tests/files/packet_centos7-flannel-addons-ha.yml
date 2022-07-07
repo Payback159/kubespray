@@ -16,6 +16,8 @@ etcd_events_cluster_enabled: true
 local_volume_provisioner_enabled: true
 kube_encrypt_secret_data: true
 ingress_nginx_enabled: true
+ingress_nginx_webhook_enabled: true
+ingress_nginx_webhook_job_ttl: 30
 cert_manager_enabled: true
 # Disable as health checks are still unstable and slow to respond.
 metrics_server_enabled: false
@@ -40,3 +42,9 @@ etcd_tls_cipher_suites:
 containerd_storage_dir: /var/data/containerd
 containerd_state_dir: /run/cri/containerd
 containerd_oom_score: -999
+
+# Kube-vip
+kube_vip_enabled: true
+kube_vip_arp_enabled: true
+kube_vip_controlplane_enabled: true
+kube_vip_address: 192.168.1.100

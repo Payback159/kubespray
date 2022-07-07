@@ -96,7 +96,11 @@ spec:
           httpGet:
             host: '127.0.0.1'
             path: /healthz
+{% if cilium_version | regex_replace('v') is version('1.11.6', '>=') %}
+            port: 9879
+{% else %}
             port: 9876
+{% endif %}
             scheme: HTTP
             httpHeaders:
             - name: "brief"
@@ -108,7 +112,11 @@ spec:
           httpGet:
             host: '127.0.0.1'
             path: /healthz
+{% if cilium_version | regex_replace('v') is version('1.11.6', '>=') %}
+            port: 9879
+{% else %}
             port: 9876
+{% endif %}
             scheme: HTTP
             httpHeaders:
             - name: "brief"
@@ -121,7 +129,11 @@ spec:
           httpGet:
             host: 127.0.0.1
             path: /healthz
+{% if cilium_version | regex_replace('v') is version('1.11.6', '>=') %}
+            port: 9879
+{% else %}
             port: 9876
+{% endif %}
             scheme: HTTP
             httpHeaders:
             - name: "brief"
@@ -186,6 +198,11 @@ spec:
         - mountPath: /tmp/cilium/config-map
           name: cilium-config-path
           readOnly: true
+{% if cilium_ip_masq_agent_enable %}
+        - name: ip-masq-agent
+          mountPath: /etc/config
+          readOnly: true
+{% endif %}
           # Needed to be able to load kernel modules
         - mountPath: /lib/modules
           name: lib-modules
@@ -365,6 +382,14 @@ spec:
       - configMap:
           name: cilium-config
         name: cilium-config-path
+{% if cilium_ip_masq_agent_enable %}
+      - configMap:
+          name: ip-masq-agent
+          items:
+          - key: config
+            path: ip-masq-agent
+        name: ip-masq-agent
+{% endif %}
 {% if cilium_encryption_enabled and cilium_encryption_type == "ipsec" %}
       - name: cilium-ipsec-secrets
         secret:

@@ -40,6 +40,7 @@
     - docker
     - docker.socket
     - containerd
+  when: docker_packages_list|length>0
 
 - name: Docker | Remove dpkg hold
   dpkg_selections:
@@ -78,7 +79,7 @@
   when: ansible_distribution == "Fedora" and not is_ostree
 
 - name: Docker | Remove docker repository on RedHat/CentOS/Oracle/AlmaLinux Linux
-  template:
+  file:
     name: "{{ yum_repo_dir }}/docker-ce.repo"
     state: absent
   when:
@@ -98,6 +99,7 @@
     - /etc/systemd/system/containerd.service.d
     - /var/lib/docker
     - /etc/docker
+  ignore_errors: true  # noqa ignore-errors
 
 - name: Docker | systemctl daemon-reload  # noqa 503
   systemd:

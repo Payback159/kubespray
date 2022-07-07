@@ -3,8 +3,8 @@
 cloud_image: ubuntu-2004
 mode: ha
 
-# use the legacy setting to test the upgrade
-etcd_kubeadm_enabled: true
+# use the kubeadm etcd setting to test the upgrade
+etcd_deployment_type: kubeadm
 
 upgrade_cluster_setup: true
 

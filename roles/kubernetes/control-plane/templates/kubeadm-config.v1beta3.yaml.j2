@@ -1,4 +1,4 @@
-apiVersion: kubeadm.k8s.io/v1beta2
+apiVersion: kubeadm.k8s.io/v1beta3
 kind: InitConfiguration
 {% if kubeadm_token is defined %}
 bootstrapTokens:
@@ -29,7 +29,7 @@ nodeRegistration:
     cloud-provider: external
 {% endif %}
 ---
-apiVersion: kubeadm.k8s.io/v1beta2
+apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 clusterName: {{ cluster_name }}
 etcd:
@@ -58,15 +58,15 @@ etcd:
 {% if etcd_quota_backend_bytes is defined %}
       quota-backend-bytes: "{{ etcd_quota_backend_bytes }}"
 {% endif %}
+{% if etcd_max_request_bytes is defined %}
+      max-request-bytes: "{{ etcd_max_request_bytes }}"
+{% endif %}
 {% if etcd_log_package_levels is defined %}
       log-package-levels: "{{ etcd_log_package_levels }}"
 {% endif %}
 {% for key, value in etcd_extra_vars.items() %}
       {{ key }}: "{{ value }}"
 {% endfor %}
-{% if host_architecture != "amd64" %}
-      etcd-unsupported-arch: {{host_architecture}}
-{% endif %}
     serverCertSANs:
 {% for san in etcd_cert_alt_names %}
       - {{ san }}
@@ -83,7 +83,6 @@ etcd:
 {% endfor %}
 {% endif %}
 dns:
-  type: CoreDNS
   imageRepository: {{ coredns_image_repo | regex_replace('/coredns(?!/coredns).*$','') }}
   imageTag: {{ coredns_image_tag }}
 networking:
@@ -119,10 +118,6 @@ apiServer:
 {% endif %}
     authorization-mode: {{ authorization_modes | join(',') }}
     bind-address: {{ kube_apiserver_bind_address }}
-{% if kube_apiserver_insecure_port|string != "0" %}
-    insecure-bind-address: {{ kube_apiserver_insecure_bind_address }}
-{% endif %}
-    insecure-port: "{{ kube_apiserver_insecure_port }}"
 {% if kube_apiserver_enable_admission_plugins|length > 0 %}
     enable-admission-plugins: {{ kube_apiserver_enable_admission_plugins | join(',') }}
 {% endif %}
@@ -450,4 +445,3 @@ featureGates:
   {{ feature|replace("=", ": ") }}
 {%   endfor %}
 {% endif %}
-

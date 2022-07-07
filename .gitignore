@@ -3,7 +3,9 @@
 **/vagrant_ansible_inventory
 *.iml
 temp
+offline-files
 .idea
+.vscode
 .tox
 .cache
 *.bak

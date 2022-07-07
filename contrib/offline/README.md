@@ -9,7 +9,8 @@ This script has two features:
 (2) Deploy local container registry and register the container images to the registry.
 
 Step(1) should be done online site as a preparation, then we bring the gotten images
-to the target offline environment.
+to the target offline environment. if images are from a private registry,
+you need to set `PRIVATE_REGISTRY` environment variable.
 Then we will run step(2) for registering the images to local registry.
 
 Step(1) can be operated with:
@@ -44,3 +45,21 @@ temp
 
 In some cases you may want to update some component version, you can declare version variables in ansible inventory file or group_vars,
 then run `./generate_list.sh -i [inventory_file]` to update file.list and images.list.
+
+## manage-offline-files.sh
+
+This script will download all files according to `temp/files.list` and run nginx container to provide offline file download.
+
+Step(1) generate `files.list`
+
+```shell
+./generate_list.sh
+```
+
+Step(2) download files and run nginx container
+
+```shell
+./manage-offline-files.sh
+```
+
+when nginx container is running, it can be accessed through <http://127.0.0.1:8080/>.

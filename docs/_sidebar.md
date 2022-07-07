@@ -34,7 +34,7 @@
   * [Fedora CoreOS](docs/fcos.md)
   * [OpenSUSE](docs/opensuse.md)
   * [RedHat Enterprise Linux](docs/rhel.md)
-  * [CentOS/OracleLinux/AlmaLinux/Rocky Linux](docs/centos8.md)
+  * [CentOS/OracleLinux/AlmaLinux/Rocky Linux](docs/centos.md)
   * [Amazon Linux 2](docs/amazonlinux.md)
 * CRI
   * [Containerd](docs/containerd.md)
@@ -50,6 +50,7 @@
   * [DNS Stack](docs/dns-stack.md)
   * [Kubernetes reliability](docs/kubernetes-reliability.md)
   * [Local Registry](docs/kubernetes-apps/registry.md)
+  * [NTP](docs/ntp.md)
 * External Storage Provisioners
   * [RBD Provisioner](docs/kubernetes-apps/rbd_provisioner.md)
   * [CEPHFS Provisioner](docs/kubernetes-apps/cephfs_provisioner.md)
