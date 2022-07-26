@@ -121,7 +121,7 @@ vagrant up
 - **Debian** Bullseye, Buster, Jessie, Stretch
 - **Ubuntu** 16.04, 18.04, 20.04, 22.04
 - **CentOS/RHEL** 7, [8](docs/centos.md#centos-8)
-- **Fedora** 34, 35
+- **Fedora** 35, 36
 - **Fedora CoreOS** (see [fcos Note](docs/fcos.md))
 - **openSUSE** Leap 15.x/Tumbleweed
 - **Oracle Linux** 7, [8](docs/centos.md#centos-8)
@@ -134,25 +134,25 @@ Note: Upstart/SysV init based OS types are not supported.
 ## Supported Components
 
 - Core
-  - [kubernetes](https://github.com/kubernetes/kubernetes) v1.24.2
+  - [kubernetes](https://github.com/kubernetes/kubernetes) v1.24.3
   - [etcd](https://github.com/etcd-io/etcd) v3.5.4
   - [docker](https://www.docker.com/) v20.10 (see note)
   - [containerd](https://containerd.io/) v1.6.6
   - [cri-o](http://cri-o.io/) v1.22 (experimental: see [CRI-O Note](docs/cri-o.md). Only on fedora, ubuntu and centos based OS)
 - Network Plugin
   - [cni-plugins](https://github.com/containernetworking/plugins) v1.1.1
-  - [calico](https://github.com/projectcalico/calico) v3.23.1
+  - [calico](https://github.com/projectcalico/calico) v3.23.3
   - [canal](https://github.com/projectcalico/canal) (given calico/flannel versions)
-  - [cilium](https://github.com/cilium/cilium) v1.11.3
-  - [flannel](https://github.com/flannel-io/flannel) v0.17.0
-  - [kube-ovn](https://github.com/alauda/kube-ovn) v1.9.2
+  - [cilium](https://github.com/cilium/cilium) v1.11.6
+  - [flannel](https://github.com/flannel-io/flannel) v0.18.1
+  - [kube-ovn](https://github.com/alauda/kube-ovn) v1.9.7
   - [kube-router](https://github.com/cloudnativelabs/kube-router) v1.5.0
   - [multus](https://github.com/intel/multus-cni) v3.8
   - [weave](https://github.com/weaveworks/weave) v2.8.1
 - Application
   - [cert-manager](https://github.com/jetstack/cert-manager) v1.8.2
   - [coredns](https://github.com/coredns/coredns) v1.8.6
-  - [ingress-nginx](https://github.com/kubernetes/ingress-nginx) v1.2.1
+  - [ingress-nginx](https://github.com/kubernetes/ingress-nginx) v1.3.0
   - [krew](https://github.com/kubernetes-sigs/krew) v0.4.3
   - [argocd](https://argoproj.github.io/) v2.4.3
   - [helm](https://helm.sh/) v3.8.2

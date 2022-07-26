@@ -156,7 +156,7 @@ packet_almalinux8-docker:
   extends: .packet_pr
   when: on_success
 
-packet_fedora34-docker-weave:
+packet_fedora36-docker-weave:
   stage: deploy-part2
   extends: .packet_pr
   when: on_success
@@ -219,14 +219,14 @@ packet_oracle7-canal-ha:
   extends: .packet_pr
   when: manual
 
-packet_fedora35-docker-calico:
+packet_fedora36-docker-calico:
   stage: deploy-part2
   extends: .packet_periodic
   when: on_success
   variables:
     RESET_CHECK: "true"
 
-packet_fedora34-calico-selinux:
+packet_fedora35-calico-selinux:
   stage: deploy-part2
   extends: .packet_periodic
   when: on_success
@@ -246,7 +246,7 @@ packet_almalinux8-calico-nodelocaldns-secondary:
   extends: .packet_pr
   when: manual
 
-packet_fedora34-kube-ovn:
+packet_fedora36-kube-ovn:
   stage: deploy-part2
   extends: .packet_periodic
   when: on_success
