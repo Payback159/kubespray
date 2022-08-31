@@ -68,7 +68,7 @@ kubeReserved:
   ephemeral-storage: {{ kube_master_ephemeral_storage_reserved }}
 {% endif %}
 {% if kube_master_pid_reserved is defined %}
-  pid: {{ kube_master_pid_reserved }}
+  pid: "{{ kube_master_pid_reserved }}"
 {% endif %}
 {% else %}
   cpu: {{ kube_cpu_reserved }}
@@ -77,7 +77,7 @@ kubeReserved:
   ephemeral-storage: {{ kube_ephemeral_storage_reserved }}
 {% endif %}
 {% if kube_pid_reserved is defined %}
-  pid: {{ kube_pid_reserved }}
+  pid: "{{ kube_pid_reserved }}"
 {% endif %}
 {% endif %}
 {% if system_reserved is defined and system_reserved %}
@@ -89,7 +89,7 @@ systemReserved:
   ephemeral-storage: {{ system_master_ephemeral_storage_reserved }}
 {% endif %}
 {% if system_master_pid_reserved is defined %}
-  pid: {{ system_master_pid_reserved }}
+  pid: "{{ system_master_pid_reserved }}"
 {% endif %}
 {% else %}
   cpu: {{ system_cpu_reserved }}
@@ -98,16 +98,16 @@ systemReserved:
   ephemeral-storage: {{ system_ephemeral_storage_reserved }}
 {% endif %}
 {% if system_pid_reserved is defined %}
-  pid: {{ system_pid_reserved }}
+  pid: "{{ system_pid_reserved }}"
 {% endif %}
 {% endif %}
 {% endif %}
 {% if is_kube_master|bool and eviction_hard_control_plane is defined and eviction_hard_control_plane %}
 evictionHard:
-  {{ eviction_hard_control_plane | to_nice_yaml(indent=2) }}
+  {{ eviction_hard_control_plane | to_nice_yaml(indent=2) | indent(2) }}
 {% elif not is_kube_master|bool and eviction_hard is defined and eviction_hard %}
 evictionHard:
-  {{ eviction_hard | to_nice_yaml(indent=2) }}
+  {{ eviction_hard | to_nice_yaml(indent=2) | indent(2) }}
 {% endif %}
 resolvConf: "{{ kube_resolv_conf }}"
 {% if kubelet_config_extra_args %}

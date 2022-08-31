@@ -127,6 +127,7 @@ vagrant up
 - **Oracle Linux** 7, [8](docs/centos.md#centos-8)
 - **Alma Linux** [8](docs/centos.md#centos-8)
 - **Rocky Linux** [8](docs/centos.md#centos-8)
+- **Kylin Linux Advanced Server V10** (experimental: see [kylin linux notes](docs/kylinlinux.md))
 - **Amazon Linux 2** (experimental: see [amazon linux notes](docs/amazonlinux.md))
 
 Note: Upstart/SysV init based OS types are not supported.
@@ -134,11 +135,11 @@ Note: Upstart/SysV init based OS types are not supported.
 ## Supported Components
 
 - Core
-  - [kubernetes](https://github.com/kubernetes/kubernetes) v1.24.3
+  - [kubernetes](https://github.com/kubernetes/kubernetes) v1.24.4
   - [etcd](https://github.com/etcd-io/etcd) v3.5.4
   - [docker](https://www.docker.com/) v20.10 (see note)
-  - [containerd](https://containerd.io/) v1.6.6
-  - [cri-o](http://cri-o.io/) v1.22 (experimental: see [CRI-O Note](docs/cri-o.md). Only on fedora, ubuntu and centos based OS)
+  - [containerd](https://containerd.io/) v1.6.8
+  - [cri-o](http://cri-o.io/) v1.24 (experimental: see [CRI-O Note](docs/cri-o.md). Only on fedora, ubuntu and centos based OS)
 - Network Plugin
   - [cni-plugins](https://github.com/containernetworking/plugins) v1.1.1
   - [calico](https://github.com/projectcalico/calico) v3.23.3
@@ -146,18 +147,19 @@ Note: Upstart/SysV init based OS types are not supported.
   - [cilium](https://github.com/cilium/cilium) v1.11.7
   - [flannel](https://github.com/flannel-io/flannel) v0.18.1
   - [kube-ovn](https://github.com/alauda/kube-ovn) v1.9.7
-  - [kube-router](https://github.com/cloudnativelabs/kube-router) v1.5.0
+  - [kube-router](https://github.com/cloudnativelabs/kube-router) v1.5.1
   - [multus](https://github.com/intel/multus-cni) v3.8
   - [weave](https://github.com/weaveworks/weave) v2.8.1
+  - [kube-vip](https://github.com/kube-vip/kube-vip) v0.4.2
 - Application
-  - [cert-manager](https://github.com/jetstack/cert-manager) v1.8.2
+  - [cert-manager](https://github.com/jetstack/cert-manager) v1.9.0
   - [coredns](https://github.com/coredns/coredns) v1.8.6
   - [ingress-nginx](https://github.com/kubernetes/ingress-nginx) v1.3.0
   - [krew](https://github.com/kubernetes-sigs/krew) v0.4.3
   - [argocd](https://argoproj.github.io/) v2.4.7
   - [helm](https://helm.sh/) v3.9.2
   - [metallb](https://metallb.universe.tf/)  v0.12.1
-  - [registry](https://github.com/distribution/distribution) v2.7.1
+  - [registry](https://github.com/distribution/distribution) v2.8.1
 - Storage Plugin
   - [cephfs-provisioner](https://github.com/kubernetes-incubator/external-storage) v2.1.0-k8s1.11
   - [rbd-provisioner](https://github.com/kubernetes-incubator/external-storage) v2.1.1-k8s1.11
@@ -165,7 +167,7 @@ Note: Upstart/SysV init based OS types are not supported.
   - [azure-csi-plugin](https://github.com/kubernetes-sigs/azuredisk-csi-driver) v1.10.0
   - [cinder-csi-plugin](https://github.com/kubernetes/cloud-provider-openstack/blob/master/docs/cinder-csi-plugin/using-cinder-csi-plugin.md) v1.22.0
   - [gcp-pd-csi-plugin](https://github.com/kubernetes-sigs/gcp-compute-persistent-disk-csi-driver) v1.4.0
-  - [local-path-provisioner](https://github.com/rancher/local-path-provisioner) v0.0.21
+  - [local-path-provisioner](https://github.com/rancher/local-path-provisioner) v0.0.22
   - [local-volume-provisioner](https://github.com/kubernetes-sigs/sig-storage-local-static-provisioner) v2.4.0
 
 ## Container Runtime Notes
