@@ -42,7 +42,7 @@ global_as_num: "64512"
 # Advertise Service External IPs
 calico_advertise_service_external_ips: []
 
-# Adveritse Service LoadBalancer IPs
+# Advertise Service LoadBalancer IPs
 calico_advertise_service_loadbalancer_ips: []
 
 # Calico eBPF support
@@ -155,3 +155,7 @@ calico_ipam_maxblocksperhost: 0
 
 # Calico apiserver (only with kdd)
 calico_apiserver_enabled: false
+
+# Calico feature detect override, set "ChecksumOffloadBroken=true" to
+# solve the https://github.com/projectcalico/calico/issues/3145
+calico_feature_detect_override: ""
