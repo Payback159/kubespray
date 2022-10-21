@@ -57,10 +57,10 @@ A simple way to ensure you get all the correct version of Ansible is to use the 
 You will then need to use [bind mounts](https://docs.docker.com/storage/bind-mounts/) to get the inventory and ssh key into the container, like this:
 
 ```ShellSession
-docker pull quay.io/kubespray/kubespray:v2.19.1
+docker pull quay.io/kubespray/kubespray:v2.20.0
 docker run --rm -it --mount type=bind,source="$(pwd)"/inventory/sample,dst=/inventory \
   --mount type=bind,source="${HOME}"/.ssh/id_rsa,dst=/root/.ssh/id_rsa \
-  quay.io/kubespray/kubespray:v2.19.1 bash
+  quay.io/kubespray/kubespray:v2.20.0 bash
 # Inside the container you may now run the kubespray playbooks:
 ansible-playbook -i /inventory/inventory.ini --private-key /root/.ssh/id_rsa cluster.yml
 ```
@@ -113,6 +113,7 @@ vagrant up
 - [Air-Gap installation](docs/offline-environment.md)
 - [NTP](docs/ntp.md)
 - [Hardening](docs/hardening.md)
+- [Mirror](docs/mirror.md)
 - [Roadmap](docs/roadmap.md)
 
 ## Supported Linux Distributions
@@ -135,7 +136,7 @@ Note: Upstart/SysV init based OS types are not supported.
 ## Supported Components
 
 - Core
-  - [kubernetes](https://github.com/kubernetes/kubernetes) v1.24.6
+  - [kubernetes](https://github.com/kubernetes/kubernetes) v1.25.3
   - [etcd](https://github.com/etcd-io/etcd) v3.5.4
   - [docker](https://www.docker.com/) v20.10 (see note)
   - [containerd](https://containerd.io/) v1.6.8
@@ -154,7 +155,7 @@ Note: Upstart/SysV init based OS types are not supported.
 - Application
   - [cert-manager](https://github.com/jetstack/cert-manager) v1.9.1
   - [coredns](https://github.com/coredns/coredns) v1.8.6
-  - [ingress-nginx](https://github.com/kubernetes/ingress-nginx) v1.3.1
+  - [ingress-nginx](https://github.com/kubernetes/ingress-nginx) v1.4.0
   - [krew](https://github.com/kubernetes-sigs/krew) v0.4.3
   - [argocd](https://argoproj.github.io/) v2.4.12
   - [helm](https://helm.sh/) v3.9.4
@@ -177,7 +178,7 @@ Note: Upstart/SysV init based OS types are not supported.
 
 ## Requirements
 
-- **Minimum required version of Kubernetes is v1.22**
+- **Minimum required version of Kubernetes is v1.23**
 - **Ansible v2.11+, Jinja 2.11+ and python-netaddr is installed on the machine that will run Ansible commands**
 - The target servers must have **access to the Internet** in order to pull docker images. Otherwise, additional configuration is required (See [Offline Environment](docs/offline-environment.md))
 - The target servers are configured to allow **IPv4 forwarding**.
@@ -246,6 +247,7 @@ See also [Network checker](docs/netcheck.md).
 
 - [Digital Rebar Provision](https://github.com/digitalrebar/provision/blob/v4/doc/integrations/ansible.rst)
 - [Terraform Contrib](https://github.com/kubernetes-sigs/kubespray/tree/master/contrib/terraform)
+- [Kubean](https://github.com/kubean-io/kubean)
 
 ## CI Tests
 

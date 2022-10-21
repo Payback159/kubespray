@@ -6,14 +6,6 @@
   tags:
     - facts
 
-- name: Set os_family fact for Kylin Linux Advanced Server
-  set_fact:
-    ansible_os_family: "RedHat"
-    ansible_distribution_major_version: "8"
-  when: ansible_distribution == "Kylin Linux Advanced Server"
-  tags:
-    - facts
-
 - name: check if booted with ostree
   stat:
     path: /run/ostree-booted
@@ -201,7 +193,7 @@
 - name: generate nameservers for resolvconf, including cluster DNS
   set_fact:
     nameserverentries: |-
-      {{ (([nodelocaldns_ip] if enable_nodelocaldns else []) + (coredns_server|d([]) if not enable_nodelocaldns else []) + nameservers|d([]) + cloud_resolver|d([]) + configured_nameservers|d([])) | unique | join(',') }}
+      {{ (([nodelocaldns_ip] if enable_nodelocaldns else []) + (coredns_server|d([]) if not enable_nodelocaldns else []) + nameservers|d([]) + cloud_resolver|d([]) + (configured_nameservers|d([]) if not disable_host_nameservers|d()|bool else [])) | unique | join(',') }}
     supersede_nameserver:
       supersede domain-name-servers {{ ( ( [nodelocaldns_ip] if enable_nodelocaldns else []) + coredns_server|d([]) + nameservers|d([]) + cloud_resolver|d([])) | unique | join(', ') }};
   when: not dns_early or dns_late
