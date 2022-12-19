@@ -50,6 +50,12 @@ is not set, a default resolver is chosen (depending on cloud provider or 8.8.8.8
 DNS servers to be added *after* the cluster DNS. Used by all ``resolvconf_mode`` modes. These serve as backup
 DNS servers in early cluster deployment when no cluster DNS is available yet.
 
+### dns_upstream_forward_extra_opts
+
+Whether or not upstream DNS servers come from `upstream_dns_servers` variable or /etc/resolv.conf, related forward block in coredns (and nodelocaldns) configuration can take options (see <https://coredns.io/plugins/forward/> for details).
+These are configurable in inventory in as a dictionary in the `dns_upstream_forward_extra_opts` variable.
+By default, no other option than the ones hardcoded (see `roles/kubernetes-apps/ansible/templates/coredns-config.yml.j2` and `roles/kubernetes-apps/ansible/templates/nodelocaldns-config.yml.j2`).
+
 ### coredns_external_zones
 
 Array of optional external zones to coredns forward queries to. It's  injected into
@@ -224,7 +230,7 @@ cluster service names.
 
 Setting ``enable_nodelocaldns`` to ``true`` will make pods reach out to the dns (core-dns) caching agent running on the same node, thereby avoiding iptables DNAT rules and connection tracking. The local caching agent will query core-dns (depending on what main DNS plugin is configured in your cluster) for cache misses of cluster hostnames(cluster.local suffix by default).
 
-More information on the rationale behind this implementation can be found [here](https://github.com/kubernetes/enhancements/blob/master/keps/sig-network/0030-nodelocal-dns-cache.md).
+More information on the rationale behind this implementation can be found [here](https://github.com/kubernetes/enhancements/blob/master/keps/sig-network/1024-nodelocal-cache-dns/README.md).
 
 **As per the 2.10 release, Nodelocal DNS cache is enabled by default.**
 
