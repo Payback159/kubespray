@@ -1,0 +1,29 @@
+all:
+  children:
+    etcd:
+      hosts:
+        himbeere41:
+          access_ip: 192.168.8.30
+          ansible_host: 192.168.8.30
+          ip: 192.168.8.30
+    k8s_cluster:
+      children:
+        calico_rr: {}
+        kube_control_plane:
+          hosts:
+            himbeere41: {}
+        kube_node:
+          hosts:
+            himbeere42:
+              access_ip: 192.168.8.31
+              ansible_host: 192.168.8.31
+              ip: 192.168.8.31
+            himbeere43:
+              access_ip: 192.168.8.32
+              ansible_host: 192.168.8.32
+              ip: 192.168.8.32
+            himbeere44:
+              access_ip: 192.168.8.33
+              ansible_host: 192.168.8.33
+              ip: 192.168.8.33
+    ungrouped: {}
