@@ -1,23 +1,54 @@
 #!/bin/bash
 
-echo "## Expiration before renewal ##"
-{{ bin_dir }}/kubeadm certs check-expiration
+echo "## Check expiration before renewal ##"
+while read -r line; do
+  # Check if line is a warning message
+  if [[ "$line" =~ ^(\[) ]]; then
+    continue
+  fi
 
-echo "## Renewing certificates managed by kubeadm ##"
-{{ bin_dir }}/kubeadm certs renew all
+  # Check if line is empty (skip empty lines)
+  if [[ -z "$line" ]]; then
+    continue
+  fi
 
-echo "## Restarting control plane pods managed by kubeadm ##"
-{% if container_manager == "docker" %}
-{{ docker_bin_dir }}/docker ps -af 'name=k8s_POD_(kube-apiserver|kube-controller-manager|kube-scheduler|etcd)-*' -q | /usr/bin/xargs {{ docker_bin_dir }}/docker rm -f
-{% else %}
-{{ bin_dir }}/crictl pods --namespace kube-system --name 'kube-scheduler-*|kube-controller-manager-*|kube-apiserver-*|etcd-*' -q | /usr/bin/xargs {{ bin_dir }}/crictl rmp -f
-{% endif %}
+  # Extract certificate name, expiry date and residual time
+  # expires is not $2, expires has the format "May 06, 2025 07:52 UTC"
+  # residual time is not $3, in awk it is $7
+  certificate=$(echo "$line" | awk '{print $1}')
+  residual_time=$(echo "$line" | awk '{print $7}')
 
-echo "## Updating /root/.kube/config ##"
-cp {{ kube_config_dir }}/admin.conf /root/.kube/config
+  #check if residual time is in days (d) or years (y)
+  unit=$(echo "$residual_time" | awk '{print substr($0,length,1)}')
 
-echo "## Waiting for apiserver to be up again ##"
-until printf "" 2>>/dev/null >>/dev/tcp/127.0.0.1/{{ kube_apiserver_port | default(6443) }}; do sleep 1; done
+  #if it's in days (d), check if it's less than the threshold
+  if [[ "$unit" == "d" ]]; then
+    residual=$(echo "$residual_time" | awk '{print substr($0,1,length-1)}')
+    if [[ "$residual" -lt {{ auto_renew_certificates_residual_time_less_than }} ]]; then
+      echo "## Certificate $certificate is about to expire in $residual days ##"
+      has_expiring_certs=true # Set flag to true, to renew certificates
+    fi
+  fi
+done < <({{ bin_dir }}/kubeadm certs check-expiration)
 
-echo "## Expiration after renewal ##"
+# If there are certificates that are about to expire, renew them
+if [[ "$has_expiring_certs" == true ]]; then
+  echo "## Renewing certificates managed by kubeadm ##"
+  {{ bin_dir }}/kubeadm certs renew all
+  
+  echo "## Restarting control plane pods managed by kubeadm ##"
+  {% if container_manager == "docker" %}
+  {{ docker_bin_dir }}/docker ps -af 'name=k8s_POD_(kube-apiserver|kube-controller-manager|kube-scheduler|etcd)-*' -q | /usr/bin/xargs {{ docker_bin_dir }}/docker rm -f
+  {% else %}
+  {{ bin_dir }}/crictl pods --namespace kube-system --name 'kube-scheduler-*|kube-controller-manager-*|kube-apiserver-*|etcd-*' -q | /usr/bin/xargs {{ bin_dir }}/crictl rmp -f
+  {% endif %}
+  
+  echo "## Updating /root/.kube/config ##"
+  cp {{ kube_config_dir }}/admin.conf /root/.kube/config
+  
+  echo "## Waiting for apiserver to be up again ##"
+  until printf "" 2>>/dev/null >>/dev/tcp/127.0.0.1/{{ kube_apiserver_port | default(6443) }}; do sleep 1; done
+fi
+
+echo "## Show expiration ##"
 {{ bin_dir }}/kubeadm certs check-expiration

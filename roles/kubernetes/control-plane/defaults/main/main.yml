@@ -160,7 +160,7 @@ kube_apiserver_admission_plugins_podnodeselector_default_node_selector: ""
 # kube_oidc_ca_cert: c3RhY2thYnVzZS5jb20...
 
 # List of the preferred NodeAddressTypes to use for kubelet connections.
-kubelet_preferred_address_types: 'InternalDNS,InternalIP,Hostname,ExternalDNS,ExternalIP'
+kubelet_preferred_address_types: "InternalDNS,InternalIP,Hostname,ExternalDNS,ExternalIP"
 
 ## Extra args for k8s components passing by kubeadm
 kube_kubeadm_apiserver_extra_args: {}
@@ -228,6 +228,7 @@ event_ttl_duration: "1h0m0s"
 auto_renew_certificates: false
 # First Monday of each month
 auto_renew_certificates_systemd_calendar: "Mon *-*-1,2,3,4,5,6,7 03:00:00"
+auto_renew_certificates_residual_time_less_than: 30
 # kubeadm renews all the certificates during control plane upgrade.
 # If we have requirement like without renewing certs upgrade the cluster,
 # we can opt out from the default behavior by setting kubeadm_upgrade_auto_cert_renewal to false
